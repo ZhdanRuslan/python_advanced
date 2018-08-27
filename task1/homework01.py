@@ -105,9 +105,5 @@ def call_count():
     Подсказки по реализации: функторы, @property
 
     """
-    @property
-    def call_count():
-        return call_count
-    
-    property = property.getter(call_count)
+
     pass
