@@ -3,4 +3,4 @@
 tkinter
 this
 .pytest_cache
-calc_proj/__pycache__
+__pycache__
