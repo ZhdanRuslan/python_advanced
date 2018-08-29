@@ -85,7 +85,7 @@ def flatten(seq):
         return []
     return flatten(first) + flatten(rest)
 
-def call_count():
+def call_count(func):
     """
     Декоратор, подсчитывающий количество вызовов задекорированной функции.
 
@@ -105,9 +105,12 @@ def call_count():
     Подсказки по реализации: функторы, @property
 
     """
-    @property
-    def call_count():
-        return call_count
-    
-    property = property.getter(call_count)
-    pass
+    # def __call__(self, val2):
+    #     return self.val1 + val2
+
+    def wrapper(*varargs, **kwargs):
+        wrapper.call_count += 1
+        res = func(*varargs, **kwargs)
+        return res
+    wrapper.call_count = 0
+    return wrapper
