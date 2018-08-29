@@ -106,13 +106,9 @@ def call_count(func):
 
     """
 
-<<<<<<< HEAD
     def wrapper(*varargs, **kwargs):
         wrapper.call_count += 1
         res = func(*varargs, **kwargs)
         return res
     wrapper.call_count = 0
     return wrapper
-=======
-    pass
->>>>>>> 182ecf0761392e20066209cacdd6d17130ae4a7b
