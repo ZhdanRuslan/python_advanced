@@ -105,8 +105,6 @@ def call_count(func):
     Подсказки по реализации: функторы, @property
 
     """
-    # def __call__(self, val2):
-    #     return self.val1 + val2
 
     def wrapper(*varargs, **kwargs):
         wrapper.call_count += 1
