@@ -17,4 +17,17 @@ class Account:
 a = Account()
 a.primary = 100
 print(a.primary)
-# print(a.bonus)
+
+# --------------------------------------------------------------
+# str, list, dict, tuple, int, float
+from collections import Sequence, Mapping
+def encode(val):
+    if isinstance(val, str):
+        print('Got string')
+    elif isinstance(val, Sequence):
+        print('Got sequence')
+    elif isinstance(val, Mapping):
+        print('Got mapping')
+    else:
+        raise NotImplementedError
+        
