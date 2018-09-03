@@ -10,52 +10,16 @@
 
 
 def fac(n):
-    """
-    Факториал
-
-    Факториал числа N - произведение всех целых чисел от 1 до N
-    включительно. Например, факториал числа 5 - произведение
-    чисел 1, 2, 3, 4, 5.
-
-    Функция должна вернуть факториал аргумента, числа n.
-    """
-
     if n == 0:
         return 1
     else:
         return n * fac(n-1)
 
-
 def gcd(a, b):
-    """
-    Наибольший общий делитель (НОД) для двух целых чисел.
-
-    Предполагаем, что оба аргумента - положительные числа
-    Один из самых простых способов вычесления НОД - метод Эвклида,
-    согласно которому
-
-    1. НОД(a, 0) = a
-    2. НОД(a, b) = НОД(b, a mod b)
-
-    (mod - операция взятия остатка от деления, в python - оператор '%')
-    """
     return a if b==0 else gcd(b, a%b)
 
-
 def fib():
-    """
-    Генератор для ряда Фибоначчи
-
-    Вам необходимо сгенерировать бесконечный ряд чисел Фибоначчи,
-    в котором каждый последующий элемент ряда является суммой двух
-    предыдущих. Начало последовательности: 1, 1, 2, 3, 5, 8, 13, ..
-
-    Подсказка по реализации: для бесконечного цикла используйте идиому
-
-    while True:
-      ..
-
-    """
+   
     a, b = 1, 1
     while True:
         yield a            
@@ -63,20 +27,6 @@ def fib():
 
 
 def flatten(seq):
-    """
-    Функция, преобразующая вложенные последовательности любого уровня
-    вложенности в плоские, одноуровневые.
-
-    >>> flatten([])
-    []
-    >>> flatten([1, 2])
-    [1, 2]
-    >>> flatten([1, [2, [3]]])
-    [1, 2, 3]
-    >>> flatten([(1, 2), (3, 4)])
-    [1, 2, 3, 4]
-    """
-
     try:
         first, *rest = seq
     except TypeError:
@@ -85,30 +35,17 @@ def flatten(seq):
         return []
     return flatten(first) + flatten(rest)
 
-def call_count(func):
-    """
-    Декоратор, подсчитывающий количество вызовов задекорированной функции.
 
-    Пример использования:
 
-    @call_count
-    def add(a, b):
-        return a + b
+class call_count():
+	def __init__(self, function):
+		self.function = function
+		self._call_count = 0
 
-    >>> add.call_count
-    0
-    >>> add(1, 2)
-    3
-    >>> add.call_count
-    1
+	def __call__(self, *args, **kwargs):
+		self._call_count += 1
+		return self.function(*args, **kwargs)
 
-    Подсказки по реализации: функторы, @property
-
-    """
-
-    def wrapper(*varargs, **kwargs):
-        wrapper.call_count += 1
-        res = func(*varargs, **kwargs)
-        return res
-    wrapper.call_count = 0
-    return wrapper
+	@property
+	def call_count(self):
+		return self._call_count
