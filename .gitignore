@@ -6,3 +6,4 @@ this
 __pycache__
 .cache
 django
+venv/

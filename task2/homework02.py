@@ -9,6 +9,9 @@ from django.core.cache import cache
 from django.conf.urls import url
 from django.http import HttpResponse
 
+from random import choice
+from string import ascii_letters, digits
+from urllib.parse import urlparse
 
 # Задание 2. URL shortener
 #
@@ -54,12 +57,14 @@ if not settings.configured:
 
 
 def random_key():
+    
+
     """
     Случайный короткий ключ, состоящий из цифр и букв.
     Минимальная длина ключа - 5 символов. Для генерации случайных
     последовательностей вы можете воспользоваться библиотекой random.
     """
-    pass
+    return ''.join(choice(choice(ascii_letters) + choice(digits)) for i in range(50) if i % 2)
 
 
 def index(request):
@@ -70,6 +75,9 @@ def index(request):
 
 
 def shorten(request, url):
+
+    
+
     """
     1. Проверяем URL. Допускаются следующие схемы: http, https
     Подсказка: разобрать URL можно функцией urllib.parse.urlparse
