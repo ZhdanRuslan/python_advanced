@@ -17,9 +17,8 @@ official+site&oq=python+off&gs_l=psy-ab.3.0.0l10.1931.7068.0.8850.12.11.0.0.0.0.
 ...1.1.64.psy-ab..1.10.998.0..0i131k1.90.6IUYpTGC9bw')
 
 print(google.scheme)
+
 res_map = {}
-
-
 
 if google.scheme == 'http' or google.scheme == 'https':
     res_map[get_key()] = google.path
