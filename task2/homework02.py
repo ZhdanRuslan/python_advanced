@@ -7,7 +7,7 @@ Supported schemes: http, https.
 from django.conf import settings
 from django.core.cache import cache
 from django.conf.urls import url
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 
 from random import choice
 from string import ascii_letters, digits
@@ -70,14 +70,20 @@ def random_key():
 def index(request):
     """
     Index. Главная страница
-    """
-    return HttpResponse(__doc__)
+    """  
+    return HttpResponse('Main page in index func')
 
 
 def shorten(request, url):
+    
+    if request.scheme == 'http' or request.scheme == 'https':
+        generated_key = random_key()
+        cache.add(generated_key, url)
+        return HttpResponse('<a href="http://localhost:8000/{}">{}</a>'.format(generated_key, generated_key))
+    else:
+        return index(request)
 
     
-
     """
     1. Проверяем URL. Допускаются следующие схемы: http, https
     Подсказка: разобрать URL можно функцией urllib.parse.urlparse
@@ -93,7 +99,6 @@ def shorten(request, url):
     Удобно, если это будет кликабельная ссылка (HTML тег 'a') вида
     <a href="http://localhost:8000/ключ">ключ</a>
     """
-    pass
 
 
 def redirect_view(request, key):
@@ -106,8 +111,15 @@ def redirect_view(request, key):
     Для редиректа можете воспользоваться вспомогательной функцией
     django.shortcuts.redirect(redirect_to) или классом-наследником HttpResponse
     """
-    pass
-
+    cached = cache.get(key, None)
+    if cached == None:
+        response = index(request)
+        response.status_code = 302 
+        return response
+    else:
+        r = HttpResponse(cached)
+        r.status_code == 302
+        return r
 
 def urlstats(request, key):
     """
