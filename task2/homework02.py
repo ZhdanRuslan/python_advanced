@@ -7,7 +7,8 @@ Supported schemes: http, https.
 from django.conf import settings
 from django.core.cache import cache
 from django.conf.urls import url
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse
+from django.shortcuts import redirect
 
 from random import choice
 from string import ascii_letters, digits
@@ -57,69 +58,34 @@ if not settings.configured:
 
 
 def random_key():
-    
-
-    """
-    Случайный короткий ключ, состоящий из цифр и букв.
-    Минимальная длина ключа - 5 символов. Для генерации случайных
-    последовательностей вы можете воспользоваться библиотекой random.
-    """
     return ''.join(choice(choice(ascii_letters) + choice(digits)) for i in range(50) if i % 2)
 
 
-def index(request):
-    """
-    Index. Главная страница
-    """  
+def index(request):  
     return HttpResponse('Main page in index func')
 
 
 def shorten(request, url):
     
-    if request.scheme == 'http' or request.scheme == 'https':
+    if (request.scheme == 'http' or request.scheme == 'https'):
+    # and not url.startwith('mailto:'):
+        if url[0:6]=='mailto':
+            return redirect('/')
         generated_key = random_key()
         cache.add(generated_key, url)
-        return HttpResponse('<a href="http://localhost:8000/{}">{}</a>'.format(generated_key, generated_key))
+        return HttpResponse('<a href="http://localhost:8000/{0}">{1}</a>'\
+        .format(generated_key, generated_key))
     else:
-        return index(request)
-
-    
-    """
-    1. Проверяем URL. Допускаются следующие схемы: http, https
-    Подсказка: разобрать URL можно функцией urllib.parse.urlparse
-    Если URL не прошел проверку - редирект на главную.
-
-    Если URL прошел проверку:
-
-    2. Сохраняем URL в кеш со сгенерированным ключом:
-
-    cache.add(key, url)
-
-    4. Отдаем успешный ответ с кодом в теле ответа.
-    Удобно, если это будет кликабельная ссылка (HTML тег 'a') вида
-    <a href="http://localhost:8000/ключ">ключ</a>
-    """
+        return redirect('/')
 
 
 def redirect_view(request, key):
-    """
-    Редирект
 
-    Функция обрабатывает сокращенный URL вида http://localhost:8000/ключ
-    Ищем ключ в кеше (cache.get). Если ключ не найден, редиректим на главную страницу (/)
-    Если найден, редиректим на полный URL, сохраненный под данным ключом.
-    Для редиректа можете воспользоваться вспомогательной функцией
-    django.shortcuts.redirect(redirect_to) или классом-наследником HttpResponse
-    """
     cached = cache.get(key, None)
     if cached == None:
-        response = index(request)
-        response.status_code = 302 
-        return response
+        return redirect('/')
     else:
-        r = HttpResponse(cached)
-        r.status_code == 302
-        return r
+        return redirect(cached)
 
 def urlstats(request, key):
     """

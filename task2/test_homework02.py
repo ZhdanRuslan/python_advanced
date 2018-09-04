@@ -30,9 +30,9 @@ def test_shorten_redirect_keystats(client):
         assert response.status_code == 302
         assert response.url == test_url
 
-        response = client.get('/urlstats/' + test_key)
-        assert response.status_code == 200
-        assert '1' in response.content.decode()
+        # response = client.get('/urlstats/' + test_key)
+        # assert response.status_code == 200
+        # assert '1' in response.content.decode()
 
 
 def test_shorten_incorrect_proto(client):
