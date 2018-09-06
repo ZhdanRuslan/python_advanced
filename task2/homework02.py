@@ -100,27 +100,13 @@ def redirect_view(request, key):
     else:
         return redirect(cached)
 
-def urlstats(request, key):
-    """
-    (Опционально)
-
-    Реализуйте счетчик кликов на сокращенные ссылки.
-    В теле ответа функция должна возращать количество
-    переходов по данному коду.
-    """
-    pass
-
-
 urlpatterns = [
     url(r'^$', index),
     # http://localhost:8000/shorten/<url>    
     url(r'shorten/(.+)', shorten),
     # http://localhost:8000/<key>
     url(r'([\w\d]+)', redirect_view),
-    # http://localhost:8000/urlstats/<key>    
-    url(r'urlstats/([\w\d]+)', urlstats),
 ]
-
 
 if __name__ == '__main__':
     import sys
