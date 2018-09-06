@@ -58,7 +58,7 @@ if not settings.configured:
 
 
 def random_key():
-    return ''.join(choice(choice(ascii_letters) + choice(digits)) for i in range(50) if i % 2)
+    return ''.join(choice(ascii_letters + digits) for x in range(7))
 
 
 def index(request):  
@@ -67,8 +67,7 @@ def index(request):
 
 def shorten(request, url):
     
-    if (request.scheme == 'http' or request.scheme == 'https'):
-    # and not url.startwith('mailto:'):
+    if request.scheme == 'http' or request.scheme == 'https':
         if url[0:6]=='mailto':
             return redirect('/')
         generated_key = random_key()
