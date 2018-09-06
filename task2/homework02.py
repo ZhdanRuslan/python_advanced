@@ -3,6 +3,9 @@ URL shortener.
 
 Supported schemes: http, https.
 """
+from random import choice
+from string import ascii_letters, digits
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.cache import cache
@@ -10,9 +13,7 @@ from django.conf.urls import url
 from django.http import HttpResponse
 from django.shortcuts import redirect
 
-from random import choice
-from string import ascii_letters, digits
-from urllib.parse import urlparse
+
 
 # Задание 2. URL shortener
 #
@@ -58,28 +59,41 @@ if not settings.configured:
 
 
 def random_key():
-    return ''.join(choice(ascii_letters + digits) for x in range(7))
+    """
+    Функция генерирующая случайную строку состоящую из символов и цифр
+    """
+    
+    return ''.join(choice(ascii_letters + digits) for x in range(5))
 
 
-def index(request):  
-    return HttpResponse('Main page in index func')
+def index(request):
+    """
+    Главная страница (в данном случае просто возврат строки в информационных целях)
+    request - WSGIRequest
+    """
+
+    return HttpResponse('<h1> Main page in index func with method {} </h1>'.format(request.method))
 
 
 def shorten(request, url):
-    
+    """
+    Реализация логики сокращения ссылок. Работаем только по http или https, в противном случае 
+    редирект на главную.
+    Кэш Django используется в качестве хранения соответствий сокращенных и не сокращенных ссылок 
+    TODO: Сделал костыльно с mailto:email@host.com (еще не разобрался до конца)
+    """
     if request.scheme == 'http' or request.scheme == 'https':
-        if url[0:6]=='mailto':
+        if str(url).startswith('mailto:'):
             return redirect('/')
         generated_key = random_key()
         cache.add(generated_key, url)
         return HttpResponse('<a href="http://localhost:8000/{0}">{1}</a>'\
-        .format(generated_key, generated_key))
+        .format(str(generated_key), str(generated_key)))
     else:
         return redirect('/')
 
 
 def redirect_view(request, key):
-
     cached = cache.get(key, None)
     if cached == None:
         return redirect('/')
