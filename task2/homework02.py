@@ -14,7 +14,6 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 
 
-
 # Задание 2. URL shortener
 #
 # Реализуйте сервис для сокращения ссылок. Примеры таких сервисов:
@@ -100,10 +99,22 @@ def redirect_view(request, key):
     else:
         return redirect(cached)
 
+def urlstats(request, key):
+    """
+    (Опционально)
+
+    Реализуйте счетчик кликов на сокращенные ссылки.
+    В теле ответа функция должна возращать количество
+    переходов по данному коду.
+    """
+    pass
+
 urlpatterns = [
     url(r'^$', index),
     # http://localhost:8000/shorten/<url>    
     url(r'shorten/(.+)', shorten),
+     # http://localhost:8000/urlstats/<key>    
+    url(r'urlstats/([\w\d]+)$', urlstats),
     # http://localhost:8000/<key>
     url(r'([\w\d]+)', redirect_view),
 ]
