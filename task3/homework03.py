@@ -18,37 +18,44 @@
 # For example, d3:cow3:moo4:spam4:eggse corresponds to {'cow': 'moo', 'spam': 'eggs'}
 # Keys must be strings and appear in sorted order (sorted as raw strings, not alphanumerics).
 
+from django.conf import settings
+
+if not settings.configured:
+    settings.configure(
+        # DEBUG=True,
+        # ROOT_URLCONF=__name__,
+    )
+
 def encode(val):
-    if get_type(val) == 'int':
-        encode_int(val)
-    elif get_type(val) == 'str':
-        encode_str(val)
+    if type(val) == int:
+        return encode_int(val)
+    elif type(val) == str:
+        return encode_str(val)
 
 def decode(val):
-    if get_type(val) == 'int':
-        decode_int(val)
-    elif get_type(val) == 'str':
-        decode_str(val)
+    if get_type(val) == int:
+        return decode_int(val)
+    elif get_type(val) == str or get_type(val) == bytes:
+        return decode_str(val)
 
 def get_type(val):
+    val = str(val)
     if val[0] == "i":
         return int
     elif val[0].isdigit():
-        return str
+        return bytes
     
 def encode_str(val):
     """
     Encoding string values
     """
-    return str(len(val)) + ":" + val
+    return bytes(str(len(val)) + ":" + val, 'utf-8')
 
 def decode_str(val):
     """
     Decoding string value
     """
-    return str(val)[(str(val).find(':'))+1:]
-
-print(decode_str('8:asdasdasdasd'))
+    return bytes(str(val)[(str(val).find(':'))+1:], 'utf-8')
 
 def encode_int(val):
     """
@@ -65,3 +72,6 @@ def decode_int(val):
     if len(decoded_int) > 1 and decoded_int[0] == "0":
         raise Exception("Value with leading zero is incorrect")
     return int(decoded_int)
+
+print(encode('asd3'))
+print(decode('4:asd3'))
