@@ -81,39 +81,45 @@ def shorten(request, url):
     Кэш Django используется в качестве хранения соответствий сокращенных и не сокращенных ссылок 
     TODO: Сделал костыльно с mailto:email@host.com (еще не разобрался до конца)
     """
-    if request.scheme == 'http' or request.scheme == 'https':
-        if str(url).startswith('mailto:'):
-            return redirect('/')
+    # if request.scheme == 'http' or request.scheme == 'https':
+    if str(url).startswith('http') or str(url).startswith('https'):
+        # if str(url).startswith('mailto:'):
+        #     return redirect('/')
         generated_key = random_key()
-        cache.add(generated_key, url)
+        cache.add(generated_key, {'url': url, 'count': 0})
         return HttpResponse('<a href="http://localhost:8000/{0}">{1}</a>'\
-        .format(str(generated_key), str(generated_key)))
+        .format(str(generated_key), str(url)))
     else:
         return redirect('/')
 
 
 def redirect_view(request, key):
+    """
+    Достаем из кеша и редиректим
+    """
     cached = cache.get(key, None)
-    if cached == None:
-        return redirect('/')
+    if cached:
+        cached['count'] += 1
+        cache.set(key, cached)
+        return redirect(cached['url'])
     else:
-        return redirect(cached)
+        return redirect('/')
 
 def urlstats(request, key):
     """
-    (Опционально)
-
-    Реализуйте счетчик кликов на сокращенные ссылки.
-    В теле ответа функция должна возращать количество
-    переходов по данному коду.
+    Статистика переходов по ссылке
     """
-    pass
+    cached = cache.get(key)
+    if cached:
+        return HttpResponse('Ref {} переходили {} раз'.format(cached['url'], cached['count']))
+    else:
+        return HttpResponse('No ref')
 
 urlpatterns = [
     url(r'^$', index),
     # http://localhost:8000/shorten/<url>    
-    url(r'shorten/(.+)', shorten),
-     # http://localhost:8000/urlstats/<key>    
+    url(r'shorten/(.+)$', shorten),
+    # http://localhost:8000/urlstats/<key>
     url(r'urlstats/([\w\d]+)$', urlstats),
     # http://localhost:8000/<key>
     url(r'([\w\d]+)', redirect_view),
