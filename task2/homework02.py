@@ -87,8 +87,8 @@ def shorten(request, url):
         #     return redirect('/')
         generated_key = random_key()
         cache.add(generated_key, {'url': url, 'count': 0})
-        return HttpResponse('<a href="http://localhost:8000/{0}">{1}</a>'\
-        .format(str(generated_key), str(url)))
+        return HttpResponse('<a href="http://localhost:8000/{0}">URL:{1}|||KEY:{2}</a>'\
+        .format(str(generated_key), str(url), str(generated_key)))
     else:
         return redirect('/')
 
@@ -111,9 +111,9 @@ def urlstats(request, key):
     """
     cached = cache.get(key)
     if cached:
-        return HttpResponse('Ref {} переходили {} раз'.format(cached['url'], cached['count']))
+        return HttpResponse('Ref {} was called {}'.format(cached['url'], cached['count']))
     else:
-        return HttpResponse('No ref')
+        return HttpResponse('No calls by current key')
 
 urlpatterns = [
     url(r'^$', index),
