@@ -85,20 +85,36 @@ def encode_byte(val):
     """
     Encoding bytes values
     """
+    if type(val) == bytes:
+        # val = val.decode("utf-8")
+        val = str(val)
+        # val = ''.join(map(chr, val))
+        return encode_str(val)
     # if val == None or val == b'':
     #     return '0:\'\''
     # if type(val) == bytes:
-    result = bytearray()
-    result += str.encode(str(len(val)))
-    result += b':'
-    result += val
-    return bytes(result)
+    # result = bytearray()
+    # result += str.encode(str(len(val)))
+    # result += b':'
+    # result += val
+    # return bytes(result)
     # return str(len(val)) + ":" + val
 
 def decode_byte(val):
     # if val == None or val == '0:':
     #     return b''
-    return str(val)[(str(val).find(':'))+1:-1].encode()   
+    # print(val)
+    # print(str(val))
+    # val = str(val)
+    # val = val[val.find(':')+1:-1]
+    # print(val)
+    # result = val
+    # # val = val.decode()
+    # # return str(val)[(str(val).find(':'))+1:-1].encode()
+    # # print(result)
+    # return encode(result) 
+    pass
+     
 
 
 
@@ -120,6 +136,11 @@ def decode_byte(val):
 
 # print(encode(b'0'))
 # print(decode(b'1:0'))
+# print(decode(encode(b'0')))
+
+# print(encode(b'\x00'))
+# print(decode(b'1:0'))
+
 
 print(encode(b'\x00'))
-# print(decode(b'1:0'))
+print(decode(b'1:\x00'))
