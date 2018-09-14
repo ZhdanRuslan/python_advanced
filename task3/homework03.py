@@ -29,33 +29,29 @@ if not settings.configured:
 def encode(val):
     if type(val) == int:
         return encode_int(val)
-    elif type(val) == str:
+    elif type(val) == str: 
         return encode_str(val)
+    elif type(val) == bytes:
+        return encode_byte(val)
 
 def decode(val):
     if get_type(val) == int:
         return decode_int(val)
-    elif get_type(val) == str or get_type(val) == bytes:
+    elif get_type(val) == str:
         return decode_str(val)
+    elif get_type(val) == bytes:
+        return decode_byte(val)
 
 def get_type(val):
-    val = str(val)
-    if val[0] == "i":
+    # val = val.decode('utf-8')
+    if val == None:
+        return
+    if str(val)[0] == "i":
         return int
-    elif val[0].isdigit():
+    elif str(val)[0].isdigit():
+        return str
+    elif str(val)[0] == 'b':
         return bytes
-    
-def encode_str(val):
-    """
-    Encoding string values
-    """
-    return bytes(str(len(val)) + ":" + val, 'utf-8')
-
-def decode_str(val):
-    """
-    Decoding string value
-    """
-    return bytes(str(val)[(str(val).find(':'))+1:], 'utf-8')
 
 def encode_int(val):
     """
@@ -72,6 +68,58 @@ def decode_int(val):
     if len(decoded_int) > 1 and decoded_int[0] == "0":
         raise Exception("Value with leading zero is incorrect")
     return int(decoded_int)
+    
+def encode_str(val):
+    """
+    Encoding string values
+    """
+    return str(len(val)) + ":" + val
 
-print(encode('asd3'))
-print(decode('4:asd3'))
+def decode_str(val):
+    """
+    Decoding string value
+    """
+    return str(val)[(str(val).find(':'))+1:].encode()
+
+def encode_byte(val):
+    """
+    Encoding bytes values
+    """
+    # if val == None or val == b'':
+    #     return '0:\'\''
+    # if type(val) == bytes:
+    result = bytearray()
+    result += str.encode(str(len(val)))
+    result += b':'
+    result += val
+    return bytes(result)
+    # return str(len(val)) + ":" + val
+
+def decode_byte(val):
+    # if val == None or val == '0:':
+    #     return b''
+    return str(val)[(str(val).find(':'))+1:-1].encode()   
+
+
+
+# print(encode('asd3').decode('utf-8'))
+# print(decode('4:asd3').decode('utf-8'))
+# print(encode(b'asd3'))
+# print(decode(b'4:asd3'))
+# print(encode(None))
+# print(encode(b''))
+# print(decode(None))
+# print(encode(b''))
+# print(decode(b'0:'))
+# print(encode(b'spam'))
+# print(decode(b'4:spam'))
+# print(encode(None))
+# print(decode(None))
+# print(b'\\x00'.hex())
+# print(ord('\x00'))
+
+# print(encode(b'0'))
+# print(decode(b'1:0'))
+
+print(encode(b'\x00'))
+# print(decode(b'1:0'))
