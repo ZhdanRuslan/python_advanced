@@ -38,7 +38,6 @@ def decode(val):
     else:
         return decode_str(val)
 
-
 def encode_int(val):
     """
     Encoding integer values
@@ -59,20 +58,11 @@ def encode_str(val):
     """
     Encoding string values
     """
-    if type(val) == bytes:
-        val = val.decode('utf-8', 'replace')
-    return str(len(val)) + ":" + val
+    res = str(len(val)) + ':' + val
+    return str.encode(res)
 
 def decode_str(val):
     """
     Decoding string value
     """
     return (str(val)[(str(val).find(':'))+1:]).encode()
-
-print(type(b'\x80'))
-# print(decode('0:'))
-# enc = encode(b'\x80')
-# print(b'\x80'.decode('utf-8', 'replace'))
-# print(enc)
-# print(enc[2:].encode())
-print(decode(encode(b'\x80')))
