@@ -58,11 +58,18 @@ def encode_str(val):
     """
     Encoding string values
     """
+    if len(val) == 0:
+        return b'0:'
+    val = val.decode('utf-8')
     res = str(len(val)) + ':' + val
-    return str.encode(res)
+    return str.encode(res, 'utf-8')
 
 def decode_str(val):
     """
     Decoding string value
     """
+    val = val.decode('utf-8')
     return (str(val)[(str(val).find(':'))+1:]).encode()
+
+print(encode('b\x80'))
+print(decode(encode('\x80')))
