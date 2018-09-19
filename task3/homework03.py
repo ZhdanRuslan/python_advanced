@@ -22,8 +22,7 @@ from django.conf import settings
 
 if not settings.configured:
     settings.configure(
-        # DEBUG=True,
-        # ROOT_URLCONF=__name__,
+
     )
 
 def encode(val):
@@ -58,18 +57,13 @@ def encode_str(val):
     """
     Encoding string values
     """
-    if len(val) == 0:
-        return b'0:'
-    val = val.decode('utf-8')
-    res = str(len(val)) + ':' + val
-    return str.encode(res, 'utf-8')
+    if type(val) == str:
+        val = val.encode()
+    
+    return bytes((str(len(val)).encode()) + b':' + val)
 
 def decode_str(val):
     """
     Decoding string value
     """
-    val = val.decode('utf-8')
-    return (str(val)[(str(val).find(':'))+1:]).encode()
-
-print(encode('b\x80'))
-print(decode(encode('\x80')))
+    return val[val.find(b':')+1:]
