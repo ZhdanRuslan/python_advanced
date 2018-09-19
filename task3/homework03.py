@@ -67,24 +67,3 @@ def decode_str(val):
     Decoding string value
     """
     return val[val.find(b':')+1:]
-
-# def encode_list(val):
-#     """
-#     Encoding lists
-#     """
-
-#     if val == []:
-#         return 'le'
-
-#     return "l" + collapse([encode(item) for item in val]) + "e"
-
-# def decode_list(val):
-#     """ 
-#     Decoding lists
-#     """
-#     if val == "le":
-#         return []
-
-#     return None
-
-# print(encode_list('asd'))
