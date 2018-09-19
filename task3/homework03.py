@@ -18,6 +18,7 @@
 # For example, d3:cow3:moo4:spam4:eggse corresponds to {'cow': 'moo', 'spam': 'eggs'}
 # Keys must be strings and appear in sorted order (sorted as raw strings, not alphanumerics).
 
+from util import collapse
 from django.conf import settings
 
 if not settings.configured:
@@ -67,3 +68,24 @@ def decode_str(val):
     Decoding string value
     """
     return val[val.find(b':')+1:]
+
+# def encode_list(val):
+#     """
+#     Encoding lists
+#     """
+
+#     if val == []:
+#         return 'le'
+
+#     return "l" + collapse([encode(item) for item in val]) + "e"
+
+# def decode_list(val):
+#     """ 
+#     Decoding lists
+#     """
+#     if val == "le":
+#         return []
+
+#     return None
+
+# print(encode_list('asd'))
