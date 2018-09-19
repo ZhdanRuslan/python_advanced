@@ -18,7 +18,6 @@
 # For example, d3:cow3:moo4:spam4:eggse corresponds to {'cow': 'moo', 'spam': 'eggs'}
 # Keys must be strings and appear in sorted order (sorted as raw strings, not alphanumerics).
 
-from util import collapse
 from django.conf import settings
 
 if not settings.configured:
