@@ -25,17 +25,24 @@ if not settings.configured:
 
     )
 
+
 def encode(val):
     if type(val) == int:
         return encode_int(val)
-    else: 
+    elif type(val) == list:
+        return encode_list(val)
+    else:
         return encode_str(val)
-   
+
+
 def decode(val):
-    if str(val)[0] == 'i':
+    if type(val) == list:
+        return decode_list(val)
+    elif str(val)[0] == 'i':
         return decode_int(val)
     else:
         return decode_str(val)
+
 
 def encode_int(val):
     """
@@ -43,27 +50,55 @@ def encode_int(val):
     """
     return "i" + str(val) + "e"
 
+
 def decode_int(val):
     """
     Decoding an integer values
     """
     decoded_int = val[1:val.index('e')]
-	
+
     if len(decoded_int) > 1 and decoded_int[0] == "0":
         raise Exception("Value with leading zero is incorrect")
     return int(decoded_int)
-    
+
+
 def encode_str(val):
     """
     Encoding string values
     """
     if type(val) == str:
         val = val.encode()
-    
+
     return bytes((str(len(val)).encode()) + b':' + val)
+
 
 def decode_str(val):
     """
     Decoding string value
     """
-    return val[val.find(b':')+1:]
+    return val[val.find(b':') + 1:]
+
+
+def encode_list(val):
+    """
+    Encoding lists
+    """
+    result_list = []
+    result_list.append('l')
+    for elem in val:
+        elem = encode(elem)
+        result_list.append(elem)
+    result_list.append('e')
+    return result_list
+
+
+def decode_list(val):
+    """
+    Decoding lists
+    """
+    val = list(val)
+    val = val[1:-1]
+    result_list = []
+    for elem in val:
+        result_list.append(decode(elem))
+    return result_list
