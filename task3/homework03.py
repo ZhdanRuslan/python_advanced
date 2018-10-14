@@ -18,6 +18,8 @@
 # For example, d3:cow3:moo4:spam4:eggse corresponds to {'cow': 'moo', 'spam': 'eggs'}
 # Keys must be strings and appear in sorted order (sorted as raw strings, not alphanumerics).
 
+from functools import reduce
+
 from django.conf import settings
 
 if not settings.configured:
@@ -26,11 +28,17 @@ if not settings.configured:
     )
 
 
+def collapse(data):
+    return reduce(lambda x, y: x + y, data)
+
+
 def encode(val):
     if type(val) == int:
         return encode_int(val)
     elif type(val) == list:
         return encode_list(val)
+    elif type(val) == dict:
+        return encode_dict(val)
     else:
         return encode_str(val)
 
@@ -102,3 +110,13 @@ def decode_list(val):
     for elem in val:
         result_list.append(decode(elem))
     return result_list
+
+
+def encode_dict(val):
+    if val == {}:
+        return 'de'
+    return 'd' + str(collapse([encode_str(key) + encode(val[key]) for key in sorted(val.keys())])) + 'e'
+
+
+def decode_dict(val):
+    pass
